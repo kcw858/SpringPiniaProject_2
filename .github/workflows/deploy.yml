@@ -1,0 +1,45 @@
+name: Deploy Git Action
+# 언제부터 배포 시작 = master에서 push할때마다 배포
+on:
+  push:
+    branches:
+      - main
+# 작업 지시 
+jobs:
+  deploy:
+    runs-on: self-hosted #현재 Ubuntu에 배포 
+    #어떤 순서로 진행할지 
+    steps:
+      # 소스 코드 다운로드 = clone과 동일 
+      - uses: actions/checkout@v4
+      # JDK 21버전 확인 
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      # 환경설정
+      - run: |
+          echo "===================="
+          echo "환경변수 설정"
+          echo "===================="
+          rm -f .env
+          touch .env
+          echo "DB_URL=${{secrets.DB_URL}}">> .env
+          echo "DB_USERNAME=${{secrets.DB_USERNAME}}">> .env
+          echo "DB_PASSWORD=${{secrets.DB_PASSWORD}}">> .env
+          echo ".evn 저장 완료"
+      # gradlew 권한 부여
+      - run: chmod +x gradlew
+      # 빌드
+      - run: ./gradlew clean build -x test
+      # Doker이미지 생성
+      - run: docker build -t food-app .
+      # 기존의 docker 프로세스 삭제
+      - run: |
+          docker stop food-app || true
+          docker rm food-app || true
+      # 새로운 docker 실행(컨테이너)
+      - run: |
+          docker run --name food-app -d --env-file .env -p 8080:8080 food-app
+        env:
+          RUNNER_TRACKING_ID: ""
