@@ -1,0 +1,42 @@
+#port 결정 default 8080 -> 9090
+# nginx 80 / jenkins 8080
+server:
+  port: 9090
+  servlet:
+    context-path: /
+
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+  #ai:
+    #google:
+      #genai: 
+        #api-key:
+
+  jpa:
+    database: oracle
+    properties:
+      hibernate: 
+        # 각 데이터베이스에 맞는 SQL문법 생성
+        dialect: org.hibernate.dialect.OracleDialect
+        format_sql: true
+        user_sql_comments: true
+
+  thymeleaf: 
+    cache: false
+    encoding: UTF-8
+    prefix: classpath:templates/
+    suffix: .html
+    mode: HTML
+
+mybatis: 
+  type-aliases-package: com.sist.web.vo
+  mapper-locations: mybatis/mapper/*.xml
+  
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
