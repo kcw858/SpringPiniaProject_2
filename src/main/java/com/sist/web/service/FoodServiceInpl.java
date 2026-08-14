@@ -31,13 +31,29 @@ public class FoodServiceInpl implements FoodService{
 	@Override
 	public FoodVO foodDetailData(int no) {
 
+		fMapper.foodHitIncrement(no);
 		return fMapper.foodDetailData(no);
 	}
 
+	/*
+	 *  1. Mapper : 재료 (DB연동)
+	 *  	- JDBC / Mybatis / JPA
+	 *  2. Controller / restController : 서빙 (브라우저로 전송)
+	 *  	 |				 |
+	 *   	화면 변경		 vue / react로 값을 전송
+	 *  3. Service : 쉐프 (요청 처리)
+	 *  	| DB + OpenAPI
+	 */
 	@Override
 	public int[] foodPages(int page) {
+		final int BLOCK = 10;
+		int totalpage = fMapper.foodTotalPage();
+		int startPage = ((page-1)/BLOCK*BLOCK)+1;
+		int endPage = ((page-1)/BLOCK*BLOCK)+BLOCK;
+		if(endPage > totalpage)
+			endPage = totalpage;
 		
-		int[] pages = {};
+		int[] pages = {page,totalpage,startPage,endPage};
 		
 		return pages;
 	}

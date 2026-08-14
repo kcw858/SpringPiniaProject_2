@@ -3,12 +3,69 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Insert title here</title>
+		<style type="text/css">
+		.row{
+			width: 960px;
+			margin: 0px auto;
+		}
+		p{
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+		.a-link{
+			cursor: pointer;
+		}
+		</style>
 	</head>
 	<body>
 		<div class="container">
 			<div class="row">
-				<h3 class="text-center">맛집</h3>
+				<div class="col-sm-3" v-for="(vo,index) in store.list" :key="index">
+					<a href="#">
+						<div class="thumbnail">
+							<img :src="vo.poster" :title="vo.address" style="width: 250px;height: 150px;object-fit:fill">
+							<p>{{vo.name}}</p>
+						</div>
+					</a>
+				</div>
+			</div>
+			<div class="row text-center" style="margin-top: 10px">
+				<ul class="pagination">
+					<li v-if="store.startPage > 1">
+						<a class="a-link" @click="store.move(store.startPage-1)">&laquo;</a>
+					</li>
+					
+					<li v-for="(i,index) in store.range" :key="index" :class="i==store.curpage?'active':''">
+						<a class="a-link" @click="store.move(i)">{{i}}</a>
+					</li>
+					
+					<li v-if="store.endPage < store.totalpage">
+						<a class="a-link" @click="store.move(store.endPage+1)">&raquo;</a>
+					</li>
+				</ul>
 			</div>
 		</div>
+		<script src="/vue/axios.js"></script>
+		<script src="/vue/food/foodStore.js"></script>
+		<script>
+		const {createApp,onMounted} = Vue
+		const {createPinia} = Pinia
+		const foodApp = createApp({
+			setup(){
+				// store를 가지고온다
+				const store = useFoodStore()
+				
+				onMounted(()=>{
+					store.foodListData()
+				})
+				return {
+					store
+				}
+			}
+		})
+		foodApp.use(createPinia())
+		foodApp.mount(".container")
+		</script>
 	</body>
 </html>
