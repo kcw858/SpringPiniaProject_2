@@ -40,6 +40,6 @@ jobs:
           docker rm food-app || true
       # 새로운 docker 실행(컨테이너)
       - run: |
-          docker run --name food-app -d --env-file .env -p 8080:8080 food-app
+          docker run --name food-app -d --env-file .env -p 9090:9090 food-app
         env:
           RUNNER_TRACKING_ID: ""
