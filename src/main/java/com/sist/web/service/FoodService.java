@@ -12,5 +12,7 @@ public interface FoodService {
 	public FoodVO foodDetailData(int no);
 	
 	public int[] foodPages(int page);
+	
+	public String aaa();
 
 }

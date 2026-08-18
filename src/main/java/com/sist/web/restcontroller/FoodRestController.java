@@ -37,7 +37,8 @@ public class FoodRestController {
 	public ResponseEntity<Map> food_list(@RequestParam("page")int page)
 	{
 		Map map = new HashMap();
-		
+		String a = fService.aaa();
+		System.out.println(a);
 		try
 		{
 			List<FoodVO> list = fService.foodListData(page);
