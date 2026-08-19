@@ -34,6 +34,8 @@ jobs:
       - run: ./gradlew clean build -x test
       # Doker이미지 생성
       - run: docker build -t pinia-app .
+      # Docker tag 생상
+      - run: docker tag pinia-app ${{secrets.DOCKER_USERNAME}}/pinia-app
       # Docker Hub 연결
       - run: echo "${{secrets.DOCKER_PASSWORD}}" | docker login -u "${{secrets.DOCKER_USERNAME}}" --password-stdin
       # Docker Hub로 Push
