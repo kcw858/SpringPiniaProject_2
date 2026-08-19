@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 
 //@Configuration
 //@EnableWebSecurity
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 /*
  *   1. Spring Security 
  *      = 보안을 담당하는 프레임워크 
