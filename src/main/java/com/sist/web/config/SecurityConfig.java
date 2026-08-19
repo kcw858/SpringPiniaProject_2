@@ -20,9 +20,9 @@ import com.sist.web.security.LoginSuccessHandler;
 
 import lombok.RequiredArgsConstructor;
 
-@Configuration
-@EnableWebSecurity
-@RequiredArgsConstructor
+//@Configuration
+//@EnableWebSecurity
+//@RequiredArgsConstructor
 /*
  *   1. Spring Security 
  *      = 보안을 담당하는 프레임워크 
