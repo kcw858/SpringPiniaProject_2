@@ -123,7 +123,7 @@ public class SecurityConfig {
 	@Bean
 	public AuthenticationManager authenticationManager(HttpSecurity http,BCryptPasswordEncoder passwordEncoder) throws Exception
 	{
-		
+		  
 		return null;
 	}
 	
