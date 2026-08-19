@@ -33,7 +33,7 @@ jobs:
       # 빌드 
       - run: ./gradlew clean build -x test
       # Docker 이미지 생성
-      - run: docker build -t ${{secrets.DOCKER_USERNAME}}/pinia-app .
+      - run: docker build -t pinia-app .
       # Docker tag 생성 
       - run: docker tag pinia-app ${{secrets.DOCKER_USERNAME}}/pinia-app:latest
       # Docker Hub 연결 
