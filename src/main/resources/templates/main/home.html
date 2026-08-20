@@ -22,7 +22,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-3" v-for="(vo,index) in store.list" :key="index">
-					<a :href="'http://localhost:9090/food/detail?no='+vo.no">
+					<a :href="'http://localhost:9090/food/detail_brfore?no='+vo.no">
 						<div class="thumbnail">
 							<img :src="vo.poster" :title="vo.address" style="width: 250px;height: 150px;object-fit:fill">
 							<p>{{vo.name}}</p>

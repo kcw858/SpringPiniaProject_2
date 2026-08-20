@@ -1,44 +1,65 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
-	<head>
-		<meta charset="UTF-8">
-		<title>Insert title here</title>
-	</head>
-	<body>
-		<nav class="navbar navbar-inverse">
-			<div class="container-fluid">
-			    <div class="navbar-header">
-			     	<a class="navbar-brand" href="/">Pinia</a>
-			    </div>
-			    <ul class="nav navbar-nav">
-			    	<li class="active"><a href="/">Home</a></li>
-			      	<li class="dropdown">
-			        	<a class="dropdown-toggle" data-toggle="dropdown" href="#">맛집
-			        	<span class="caret"></span></a>
-			        	<ul class="dropdown-menu">
-			          		<li><a href="#">맛집검색</a></li>
-			          		<li><a href="#">맛집추천</a></li>
-			        	</ul>
-			      	</li>
-			        <li class="dropdown">
-			        	<a class="dropdown-toggle" data-toggle="dropdown" href="#">레시피
-			        	<span class="caret"></span></a>
-			        	<ul class="dropdown-menu">
-			          		<li><a href="#">레시피</a></li>
-			          		<li><a href="#">검색</a></li>
-			          		<li><a href="#">쉐프</a></li>
-			        	</ul>
-			      	</li>
-			      	<li><a href="#">실시간 채팅</a></li>
-			      	<li><a href="#">마이페이지</a></li>
-			    </ul>
-			    <ul class="nav navbar-nav navbar-right">
-			      	<li><a href="#"><span class="glyphicon glyphicon-user"></span> 회원가입</a></li>
-			      	<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> 로그인</a></li>
-			    </ul>
-		  	</div>
-		</nav>
-	</body>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">Pinia</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="/">Home</a></li>
+      <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">맛집
+        <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="#">맛집검색</a></li>
+          <li><a href="#">맛집추천</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">레시피
+        <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="#">레시피</a></li>
+          <li><a href="#">검색</a></li>
+          <li><a href="#">쉐프</a></li>
+        </ul>
+      </li>
+      <li><a href="#">실시간 채팅</a></li>
+      <li><a href="#">빠른 예약</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li sec:authorize="!isAuthenticated()"><a href="#"><span class="glyphicon glyphicon-user"></span> 회원가입</a></li>
+      <li sec:authorize="!isAuthenticated()"><a href="/member/login"><span class="glyphicon glyphicon-log-in"></span> 로그인</a></li>
+      <li sec:authorize="isAuthenticated()">
+      <li sec:authorize="hasRole('ADMIN')">
+        <a href="#">
+            <span th:text="${session.username}"></span>(관리자) 로그인되었습니다
+        </a>
+      </li>
+      <li sec:authorize="hasRole('USER')">
+        <a href="#">
+            <span th:text="${session.username}"></span>(일반사용자) 로그인되었습니다
+        </a>
+      </li>
+       <li sec:authorize="hasRole('MANAGER')">
+        <a href="#">
+            <span th:text="${session.username}"></span>(부관리자) 로그인되었습니다
+        </a>
+      </li>
+      <li sec:authorize="isAuthenticated()">
+        <a href="/member/logout">
+            <span class="glyphicon glyphicon-log-in"></span> 로그아웃
+        </a>
+    </li>
+    </ul>
+  </div>
+</nav>
+</body>
 </html>

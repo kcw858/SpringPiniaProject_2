@@ -20,8 +20,8 @@ import com.sist.web.security.LoginSuccessHandler;
 
 import lombok.RequiredArgsConstructor;
 
-//@Configuration
-//@EnableWebSecurity
+@Configuration 
+@EnableWebSecurity
 @RequiredArgsConstructor
 /*
  *   1. Spring Security 
@@ -91,6 +91,7 @@ public class SecurityConfig {
 	          .loginProcessingUrl("/member/login_process")
 	          .usernameParameter("userid")
 	          .passwordParameter("userpwd")
+	          //authenticationManager 호출
 	          .defaultSuccessUrl("/",false)
 	          .successHandler(loginSuccessHandler)
 	          .failureHandler(loginFailHandler)
@@ -98,9 +99,14 @@ public class SecurityConfig {
 	    )
 	    .rememberMe(remember-> remember
 	         .key("my-secret-key")
-	         .rememberMeParameter("remember-me")
-	         .tokenValiditySeconds(60*60*24)
-	         .tokenRepository(persistentTokenRepository())
+	         .rememberMeParameter("remember-me") //체크박스 name과 일치
+	         .tokenValiditySeconds(60*60*24) // 저장 기간
+	         .tokenRepository(persistentTokenRepository()) //presistent_logins 테이블에 저장
+	         /*
+	          *  로그인 -> remember-me 체크 (true) -> 토큰 생성 -> JdbcTokenRepositoryImpl -> DB에 저장(presistent_logins)
+	          *  																[username / series / token / last_used]
+	          *  
+	          */
 	    )
 	    
 	    .logout(logout -> logout 
@@ -184,5 +190,58 @@ public class SecurityConfig {
        repo.setDataSource(dataSource);
        return repo;
    }
+   
+   /*
+    *  [로그인]
+    *  	| POST => /member/login_process
+    *  ---------------------------
+    *  Spring Security FilterChain
+    *  ----------------------------
+    *  	|
+    *  UsernamePasswordAuthenticationFilter
+    *  	| - username
+    *   | - userpassword
+    *  		.usernameParameter("userid")
+	        .passwordParameter("userpwd")
+	    |
+	   ----------------------
+	   AuthenticationManager
+	   ----------------------
+	    |
+	   AuthenticationProvider
+	    |
+	   JdbcUserDetailsManager
+	   			|
+	   	--------------------
+	   	|					|
+	   springmember		 authority
+	   (기본 사용자 정보)	(권한 정보)
+	   		|				|
+	   		----------------
+	   				|
+	   			UserDetails
+	   				|
+	   			BCryptPasswordEncoder
+	   				|
+	   			비밀번호 검증
+	   				|
+	   		-----------------
+	   		|				|
+	   	   성공			   실패
+	   	    |				|
+	LoginSuccessHandler	  LoginFailHandler
+			|
+		SecurityContext
+			|
+		session에 저장
+			|
+		인증 완료
+		
+	  -------------------------------
+	  라이브러리 역할
+	  @EnableWebSecurity -> Spring Security 활성화
+	  
+	   1. SequrityConfig : 보안 전체 설정을 담당
+    */
    
 }
