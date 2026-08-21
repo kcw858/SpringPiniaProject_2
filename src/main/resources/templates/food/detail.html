@@ -5,13 +5,19 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Insert title here</title>
-		<script>
-		const NO = /*[[${no}]]*/ 0
+		<script th:inline="javascript">
+		const NO = /*[[${vo.no}]]*/ 0
+		const SESSION_ID=/*[[${session.userid}]]*/ ''
+		console.log("no:"+NO)
+		console.log("SESSION_ID:"+SESSION_ID)
 		</script>
 		<style type="text/css">
 		.row{
 			width: 900px;
 			margin: 0px auto;
+		}
+		.a-link{
+			cursor: pointer;
 		}
 		</style>
 	</head>
@@ -117,8 +123,112 @@
 				</table>
 			</div>
 			<div class="row" style="margin-top: 10px" id="commentId">
-				
+				<table class="table" v-if="store.count === 0">
+					<tbody>
+						<tr>
+							<td class="text-center">
+								<h3>댓글이 없습니다</h3>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<table class="table" v-if="store.count !== 0">
+					<tbody>
+						<tr>
+							<td>
+								<table class="table" v-for="(rvo,index) in store.rList" :key="index">
+									<tbody>
+										<tr>
+											<td width="80%" class="text-left">
+												◑{{rvo.name}}({{rvo.dbday}})
+											</td>
+											<td width="20%" class="text-right">
+												<a class="a-link btn btn-xs btn-info" 
+													v-if="rvo.id === store.sessionId" @click="store.toggleUpdate(rvo.no,rvo.msg)">
+													{{store.upReplyNo===rvo.no ? '취소':'수정'}}
+												</a>
+												<a class="a-link btn btn-xs btn-warning" 
+													v-if="rvo.id === store.sessionId" @click="store.commentDelete(rvo.no)">
+													삭제
+												</a>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="2" style="white-space: pre-wrap;">{{rvo.msg}}</td>
+										</tr>
+										<tr v-if="store.upReplyNo === rvo.no">
+											<td colspan="2">
+												<textarea rows="4" cols="100" style="float: left" v-model="store.updateMsg[rvo.no]"></textarea>
+												<button type="button" class="btn-primary" style="height: 86px;width:100px;float: left" 
+													@click="store.commentUpdate(rvo.no)">
+													수정
+												</button>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<table class="table">
+									<tbody>
+										<tr>
+											<td class="text-center">
+												<button type="button" class="btn-sm btn-primary" 
+												@click="store.move(store.curpage > 1 ? store.curpage-1 : store.curpage)">
+													이전
+												</button>
+												{{store.curpage}} page / {{store.totalpage}} pages
+												<button type="button" class="btn-sm btn-primary"
+												@click="store.move(store.curpage < store.totalpage ? store.curpage+1 : store.curpage)">
+													다음
+												</button>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<table class="table" sec:authorize="isAuthenticated()">
+					<tbody>
+						<tr>
+							<td class="text-center">
+								<textarea rows="4" cols="100" style="float: left" ref="msgRef" v-model="store.msg"></textarea>
+								<button type="button" class="btn-primary" style="height: 86px;width:100px;float: left" 
+									@click="store.commentInsert(msgRef)">
+									댓글
+								</button>
+							</td> 
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
+		<script src="/vue/axios.js"></script>
+		<script src="/vue/comment/commentStore.js"></script>
+		<script>
+		const {createApp,onMounted,ref} = Vue
+		const {createPinia} = Pinia
+		const commentApp = createApp({
+			setup(){
+				// store를 가지고온다
+				const store = useCommentStore()
+				// ref
+				const msgRef = ref(null)
+				console.log(store)
+				//시작과 동시에 데이터 읽기
+				onMounted(()=>{
+					store.sessionId=SESSION_ID
+					store.commentListData(NO)
+				})
+				//HTML에서 사용이 가능하게 변수 설정
+				return {
+					store,
+					msgRef
+				}
+			}
+		})
+		commentApp.use(createPinia())
+		commentApp.mount("#commentId")
+		</script>
 	</body>
 </html>

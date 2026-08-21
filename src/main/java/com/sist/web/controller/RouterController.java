@@ -19,10 +19,12 @@ import com.sist.web.vo.*;
 @RequiredArgsConstructor
 public class RouterController {
 	private final FoodService fService;
+	private final PriceService pService;
 	
 	@GetMapping("/")
 	public String main_main(Model model)
 	{
+		//System.out.println(pService.prices());
 		model.addAttribute("main_html","main/home");
 		return "main/main";
 	}

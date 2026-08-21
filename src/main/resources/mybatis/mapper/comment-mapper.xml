@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sist.web.mapper.CommentMapper">
 	<select id="commentListData" resultType="com.sist.web.vo.CommentVO" parameterType="int">
-		SELECT no,fno,id.name,TO_CHAR(regdate,'yyyy-mm-dd hh24:mi:ss') as dbday
+		SELECT no,fno,id,name,TO_CHAR(regdate,'yyyy-mm-dd hh24:mi:ss') as dbday,msg
 		FROM piniacomment
 		WHERE fno=#{fno} 
 		ORDER BY no DESC
@@ -16,4 +16,12 @@
 			pc_no_seq.nextval,#{fno},#{id},#{name},#{msg},SYSDATE
 		)
 	</insert>
+	<delete id="commentDelete" parameterType="int">
+		DELETE FROM piniacomment WHERE no=#{no}
+	</delete>
+	<update id="commentUpdate" parameterType="com.sist.web.vo.CommentVO">
+		UPDATE piniacomment SET
+		msg=#{msg}
+		WHERE no=#{no}
+	</update>
 </mapper>

@@ -30,4 +30,16 @@ public class CommentServiceImpl implements CommentService{
 		mapper.commentInsert(vo);
 	}
 
+	@Override
+	public void commentDelete(int no) {
+		mapper.commentDelete(no);
+		
+	}
+
+	@Override
+	public void commentUpdate(CommentVO vo) {
+		mapper.commentUpdate(vo);
+		
+	}
+
 }
