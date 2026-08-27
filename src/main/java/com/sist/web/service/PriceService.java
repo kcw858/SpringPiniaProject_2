@@ -4,4 +4,6 @@ import java.util.Map;
 
 public interface PriceService {
 	public Map<String, Integer> prices();
+	
+	public String ai(String a);
 }

@@ -1,8 +1,10 @@
 package com.sist.web.service;
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.*;
 
 import org.springframework.stereotype.Service;
@@ -85,5 +87,77 @@ public class PriceServiceImpl implements PriceService{
         }
 
         return httpResponse;
+    }
+    
+ 
+    @Override
+    public String ai(String a) {
+
+        String url =
+                "https://generativelanguage.googleapis.com/v1beta/models/"
+                + "gemini-3.6-flash:generateContent?key="
+                + "";
+
+        String body = """
+            {
+              "contents": [
+                {
+                  "parts": [
+                    {
+                      "text": "%s"
+                    }
+                  ]
+                }
+              ]
+            }
+            """.formatted(a.replace("\"", "\\\""));
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .timeout(Duration.ofSeconds(30))
+                .POST(HttpRequest.BodyPublishers.ofString(body))
+                .build();
+
+        try {
+
+            System.out.println("Gemini 요청 시작");
+
+            long start = System.currentTimeMillis();
+
+            HttpResponse<String> response =
+                    client.send(
+                            request,
+                            HttpResponse.BodyHandlers.ofString()
+                    );
+
+            long end = System.currentTimeMillis();
+
+            System.out.println(
+                    "Gemini 응답 시간 : "
+                    + (end - start)
+                    + "ms"
+            );
+
+            if (response.statusCode() != 200) {
+                System.out.println("Gemini 오류 : " + response.body());
+                return null;
+            }
+
+            JsonNode root = mapper.readTree(response.body());
+
+            return root
+                    .path("candidates")
+                    .get(0)
+                    .path("content")
+                    .path("parts")
+                    .get(0)
+                    .path("text")
+                    .asText();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

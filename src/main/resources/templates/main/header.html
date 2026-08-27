@@ -31,8 +31,9 @@
           <li><a href="#">쉐프</a></li>
         </ul>
       </li>
-      <li><a href="#">실시간 채팅</a></li>
-      <li><a href="#">빠른 예약</a></li>
+      <li sec:authorize="isAuthenticated()"><a href="/chat/chat">실시간 채팅</a></li>
+      <li sec:authorize="isAuthenticated()"><a href="#">빠른 예약</a></li>
+      <li><a href="/board/list">자유 게시판</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li sec:authorize="!isAuthenticated()"><a href="#"><span class="glyphicon glyphicon-user"></span> 회원가입</a></li>

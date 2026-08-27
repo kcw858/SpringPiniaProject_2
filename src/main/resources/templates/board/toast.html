@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+/* ================================
+   Toast Container
+================================ */
+.toast-container {
+    position: fixed;
+    right: 28px;
+    bottom: 28px;
+    z-index: 9999;
+}
+
+
+/* ================================
+   Toast
+================================ */
+.toast {
+    width: 380px;
+    min-height: 110px;
+
+    background: rgba(255, 255, 255, 0.98);
+
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 15px 35px rgba(31, 41, 55, 0.15),
+        0 5px 12px rgba(31, 41, 55, 0.08);
+
+    opacity: 0;
+    transform: translateY(25px) scale(0.96);
+
+    transition:
+        opacity 0.35s ease,
+        transform 0.35s cubic-bezier(.22,1,.36,1);
+
+    pointer-events: none;
+}
+
+
+/* ================================
+   Show
+================================ */
+.toast.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+
+/* ================================
+   Header
+================================ */
+.toast-header {
+    position: relative;
+
+    padding: 15px 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    color: #fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #4f8cff 0%,
+            #6c63ff 100%
+        );
+}
+
+
+/* 왼쪽 영역 */
+.toast-header-left {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+
+/* 아이콘 */
+.toast-icon {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255,255,255,0.18);
+
+    border-radius: 50%;
+
+    font-size: 16px;
+}
+
+
+/* 제목 */
+.toast-title {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+}
+
+
+/* ================================
+   Close Button
+================================ */
+.toast-close {
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255,255,255,0.12);
+
+    border: none;
+    border-radius: 50%;
+
+    color: #fff;
+
+    font-size: 20px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+
+.toast-close:hover {
+    background: rgba(255,255,255,0.25);
+    transform: rotate(90deg);
+}
+
+
+/* ================================
+   Body
+================================ */
+.toast-body {
+    min-height: 55px;
+
+    padding: 18px 20px;
+
+    display: flex;
+    align-items: center;
+
+    background: #fff;
+
+    color: #374151;
+
+    font-size: 15px;
+    line-height: 1.6;
+
+    letter-spacing: -0.2px;
+}
+
+
+/* ================================
+   아래쪽 포인트 라인
+================================ */
+.toast::after {
+    content: "";
+
+    display: block;
+
+    height: 3px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #4f8cff,
+            #6c63ff,
+            #8b5cf6
+        );
+}
+
+
+/* ================================
+   Mobile
+================================ */
+@media (max-width: 576px) {
+
+    .toast-container {
+        left: 15px;
+        right: 15px;
+        bottom: 18px;
+    }
+
+    .toast {
+        width: 100%;
+        border-radius: 15px;
+    }
+
+    .toast-header {
+        padding: 14px 16px;
+    }
+
+    .toast-body {
+        padding: 16px;
+        font-size: 14px;
+    }
+}
+</style>
+</head>
+<body>
+<div class="toast-container">
+
+    <div id="replyToast" class="toast">
+
+        <!-- Header -->
+        <div class="toast-header">
+
+            <div class="toast-header-left">
+
+                <div class="toast-icon">
+                    ✓
+                </div>
+
+                <strong class="toast-title">
+                    알림
+                </strong>
+
+            </div>
+
+            <button
+                type="button"
+                class="toast-close"
+                onclick="hideToast()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <!-- Body -->
+        <div
+            class="toast-body"
+            id="toastMsg"
+        ></div>
+
+    </div>
+
+</div>
+
+</html>

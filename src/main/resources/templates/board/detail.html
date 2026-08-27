@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<style type="text/css">
+.row {
+  margin: 0px auto;
+  width: 800px;
+}
+h3 {
+  text-align: center;
+}
+/* 댓글 전체 영역 */
+.comment-section {
+    margin-top: 35px;
+    padding: 28px 30px;
+    background: #f8fafc;
+    border-radius: 18px;
+    border: 1px solid #e9edf3;
+}
+
+/* 댓글 제목 */
+.comment-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 22px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #222;
+}
+
+.comment-title::before {
+    content: "";
+    width: 5px;
+    height: 24px;
+    background: linear-gradient(180deg, #4f8cff, #7b61ff);
+    border-radius: 10px;
+}
+
+/* 댓글 없음 */
+.comment-empty {
+    padding: 45px 20px;
+    text-align: center;
+    background: #fff;
+    border-radius: 14px;
+    color: #9aa3af;
+    border: 1px solid #edf0f4;
+}
+
+.comment-empty-icon {
+    font-size: 38px;
+    margin-bottom: 10px;
+}
+
+.comment-empty h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* 댓글 리스트 */
+.comment-list {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+.comment-item {
+    list-style: none;
+    background: #fff;
+    border: 1px solid #edf0f4;
+    border-radius: 14px;
+    margin-bottom: 12px;
+    padding: 18px 20px;
+    transition: all .2s ease;
+}
+
+.comment-item:hover {
+    border-color: #d9e3f5;
+    box-shadow: 0 5px 18px rgba(30, 50, 80, .06);
+}
+
+/* 댓글 상단 */
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.comment-user {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+}
+
+.comment-avatar {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #4f8cff, #755cff);
+    flex-shrink: 0;
+}
+
+.comment-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #303846;
+}
+
+.comment-date {
+    font-size: 12px;
+    color: #a0a8b4;
+}
+
+/* 답글 표시 */
+.reply-indent {
+    color: #9aa3af;
+    margin-right: 5px;
+}
+
+.reply-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    margin-right: 5px;
+}
+
+/* 버튼 */
+.comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+}
+
+.comment-btn {
+    border: 0;
+    border-radius: 7px;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: none !important;
+    transition: .2s;
+}
+
+.comment-btn:hover {
+    transform: translateY(-1px);
+}
+
+.comment-edit {
+    background: #eaf3ff;
+    color: #3478dc;
+}
+
+.comment-delete {
+    background: #fff0f0;
+    color: #e05252;
+}
+
+.comment-reply {
+    background: #edf9f2;
+    color: #26945a;
+}
+
+.comment-reply.active {
+    background: #555;
+    color: #fff;
+}
+
+/* 댓글 내용 */
+.comment-content {
+    margin: 15px 0 2px 43px;
+}
+
+.comment-content pre {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    color: #4b5563;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* 답글 입력 */
+.reply-box {
+    display: flex;
+    margin: 15px 0 5px 43px;
+    padding: 12px;
+    background: #f7f9fc;
+    border-radius: 10px;
+}
+
+.reply-box textarea {
+    flex: 1;
+    min-height: 80px;
+    resize: vertical;
+    border: 1px solid #dfe5ed;
+    border-radius: 8px 0 0 8px;
+    padding: 11px 13px;
+    outline: none;
+    font-family: inherit;
+    font-size: 13px;
+    background: #fff;
+}
+
+.reply-box textarea:focus,
+.comment-write textarea:focus {
+    border-color: #6999f7;
+    box-shadow: 0 0 0 3px rgba(79, 140, 255, .10);
+}
+
+.reply-submit {
+    width: 75px;
+    border: 0;
+    border-radius: 0 8px 8px 0;
+    background: linear-gradient(135deg, #4f8cff, #695cff);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* 댓글 작성 */
+.comment-write {
+    margin-top: 20px;
+    padding: 18px;
+    background: #fff;
+    border: 1px solid #e7ebf1;
+    border-radius: 14px;
+}
+
+.comment-write-inner {
+    display: flex;
+}
+
+.comment-write textarea {
+    flex: 1;
+    min-height: 90px;
+    resize: vertical;
+    border: 1px solid #dfe5ed;
+    border-radius: 9px 0 0 9px;
+    padding: 13px 15px;
+    outline: none;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.comment-submit {
+    width: 95px;
+    border: 0;
+    border-radius: 0 9px 9px 0;
+    background: linear-gradient(135deg, #4f8cff, #695cff);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.comment-submit:hover,
+.reply-submit:hover {
+    opacity: .9;
+}
+
+/* 모바일 */
+@media (max-width: 768px) {
+    .comment-section {
+        padding: 20px 15px;
+    }
+
+    .comment-header {
+        align-items: flex-start;
+    }
+
+    .comment-actions {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .comment-content,
+    .reply-box {
+        margin-left: 0;
+    }
+
+    .comment-submit {
+        width: 70px;
+    }
+
+    .comment-btn {
+        padding: 4px 7px;
+    }
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script th:inline="javascript">
+const SESSION_ID=/*[[${session.userid}]]*/''
+const BOARDNO=/*[[${no}]]*/ 0
+</script>
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <h3>내용보기</h3>
+      <table class="table">
+        <tbody>
+          <tr>
+            <th width=20% class="text-center success">번호</th>
+            <td width=30% class="text-center">[[${vo.no}]]</td>
+            <th width=20% class="text-center success">작성일</th>
+            <td width=30% class="text-center">[[${#temporals.format(vo.regdate,'yyyy-MM-dd hh:mm:ss')}]]</td>
+          </tr>
+          <tr>
+            <th width=20% class="text-center success">이름</th>
+            <td width=30% class="text-center">[[${vo.name}]]</td>
+            <th width=20% class="text-center success">조회수</th>
+            <td width=30% class="text-center">[[${vo.hit}]]</td>
+          </tr>
+          <tr>
+            <th width=20% class="text-center success">제목</th>
+            <td colspan="3" class="text-center">[[${vo.subject}]]</td>
+          </tr>
+          <tr>
+            <td colspan="4" class="text-left"
+                 valign="top" height="200">
+               <pre style="white-space: pre-wrap;border:none;background: white;">[[${vo.content}]]</pre>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4" class="text-right">
+              <a href="#" class="btn btn-xs btn-info">수정</a>
+              <a href="#" class="btn btn-xs btn-success">삭제</a>
+              <a href="/board/list" class="btn btn-xs btn-warning">목록</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- <div class="row" style="margin-top: 20px" id="comment">
+      <h3>댓글</h3>
+           <table class="table" v-if="store.count==0">
+             <tbody>
+               <tr>
+                 <td class="text-center">
+                   <h3>댓글이 없습니다</h3>
+                 </td>
+               </tr>
+             </tbody>
+           </table>
+           <table class="table" v-else>
+             <tbody>
+               <tr>
+                 <td>
+                   <table class="table" v-for="(rvo,index) in store.list" :key="index">
+                    <tr>
+                      <td width=80% class="text-left">
+                       <span v-if="rvo.group_tab>0">
+                        <span v-for="i in rvo.group_tab">
+                          &nbsp;&nbsp;
+                        </span>
+                        <img src="/image/re_icon.png">
+                       </span>
+                       ◑<span>{{rvo.name}}</span>
+                       &nbsp;(<span>{{rvo.dbday}}</span>)
+                      </td>
+                      <td width=20% class="text-right">
+                        <a class="a-link btn btn-xs btn-info"
+                         v-if="rvo.id===store.sessionId"
+                        >수정</a>
+                        <a class="a-link btn btn-xs btn-warning"
+                         v-if="rvo.id===store.sessionId"
+                        >삭제</a>
+                        <a class="a-link btn btn-xs btn-success"
+                         v-if="store.sessionId!==''"
+                         @click="store.toggleReply(rvo.no)"
+                        >{{store.reReplyNo===rvo.no?'취소':'댓글'}}</a>
+                      </td>
+                    </tr>
+                    <tr v-if="store.reReplyNo===rvo.no">
+                      <td class="text-center">
+		                  <textarea rows="4" cols="70" style="float: left"
+		                    ref="msgRef" v-model="store.replyMsg[rvo.no]"
+		                  ></textarea>
+		                  <button type=button class="btn-primary"
+		                    @click="store.boardCommentReplyInsert(rvo.no)"
+		                    style="width:70px;height: 89px;float: left">댓글</button>
+		                 </td>
+                    </tr>
+                    <tr>
+                      <td colspan="2" valign="top">
+                        <pre style="white-space: pre-wrap;">{{rvo.msg}}</pre>
+                      </td>
+                    </tr>
+                   </table>
+                 </td>
+               </tr>
+             </tbody>
+           </table>
+           <table class="table" sec:authorize="isAuthenticated()">
+               <tbody>
+                <tr>
+                 <td class="text-center">
+                  <textarea rows="4" cols="70" style="float: left"
+                    ref="msgRef" v-model="store.msg"
+                  ></textarea>
+                  <button type=button class="btn-primary"
+                    @click="store.boardCommentInsert(msgRef)"
+                    style="width:100px;height: 89px;float: left">댓글</button>
+                 </td>
+                </tr>
+               </tbody>
+             </table>
+    </div>
+    <th:block th:include="board/toast"></th:block> -->
+    <div class="row comment-section" id="comment">
+
+    <h3 class="comment-title">
+        댓글
+        <small style="font-size:13px;color:#9aa3af;">
+            {{store.count}}
+        </small>
+    </h3>
+
+    
+    <div class="comment-empty" v-if="store.count==0">
+        <div class="comment-empty-icon">💬</div>
+        <h3>아직 작성된 댓글이 없습니다.</h3>
+    </div>
+
+
+    
+    <div class="comment-list" v-else>
+
+        <div
+            class="comment-item"
+            v-for="(rvo,index) in store.list"
+            :key="index"
+            :style="{marginLeft: (rvo.group_tab * 28) + 'px'}"
+        >
+
+            
+            <div class="comment-header">
+
+                <div class="comment-user">
+
+                    <span v-if="rvo.group_tab>0" class="reply-indent">
+                        ↳
+                    </span>
+
+                    
+
+                    <span class="comment-avatar">
+                        {{rvo.name ? rvo.name.charAt(0) : '?'}}
+                    </span>
+
+                    <span class="comment-name">
+                        {{rvo.name}}
+                    </span>
+
+                    <span class="comment-date">
+                        {{rvo.dbday}}
+                    </span>
+
+                </div>
+
+
+                
+                <div class="comment-actions">
+
+                    <a
+                        class="comment-btn comment-edit"
+                        v-if="rvo.id===store.sessionId"
+                    >
+                        수정
+                    </a>
+
+                    <a
+                        class="comment-btn comment-delete"
+                        v-if="rvo.id===store.sessionId"
+                    >
+                        삭제
+                    </a>
+
+                    <a
+                        class="comment-btn comment-reply"
+                        :class="{active: store.reReplyNo===rvo.no}"
+                        v-if="store.sessionId!==''"
+                        @click="store.toggleReply(rvo.no)"
+                    >
+                        {{store.reReplyNo===rvo.no ? '취소' : '댓글'}}
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            
+            <div class="comment-content">
+                <pre>{{rvo.msg}}</pre>
+            </div>
+
+
+            
+            <div
+                class="reply-box"
+                v-if="store.reReplyNo===rvo.no"
+            >
+
+                <textarea
+                    rows="4"
+                    ref="msgRef"
+                    v-model="store.replyMsg[rvo.no]"
+                    placeholder="답글을 입력해주세요."
+                ></textarea>
+
+                <button
+                    type="button"
+                    class="reply-submit"
+                    @click="store.boardCommentReplyInsert(rvo.no)"
+                >
+                    등록
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    
+    <div
+        class="comment-write"
+        sec:authorize="isAuthenticated()"
+    >
+
+        <div class="comment-write-inner">
+
+            <textarea
+                rows="4"
+                cols="70"
+                ref="msgRef"
+                v-model="store.msg"
+                placeholder="따뜻한 댓글을 남겨주세요 😊"
+            ></textarea>
+
+            <button
+                type="button"
+                class="comment-submit"
+                @click="store.boardCommentInsert(msgRef)"
+            >
+                댓글 등록
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<th:block th:include="board/toast"></th:block> 
+  </div>
+  <script src="/vue/axios.js"></script>
+  <script src="/vue/comment/boardStore.js"></script>
+  <script src="/vue/comment/boardView.js"></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Insert title here</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+		<style type="text/css">
+		.row{
+			width: 800px;
+			margin: 0px auto;
+		}
+		h3{
+			text-align: center;
+		}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<h3>자유 게시판</h3>
+				<table class="table">
+					<tbody>
+						<tr>
+							<td>
+								<a href="/board/insert" class="btn btn-sm btn-danger">새글</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<table class="table">
+					<thead>
+						<tr class="success">
+							<th class="text-center" width="10%">번호</th>
+							<th class="text-center" width="45%">제목</th>
+							<th class="text-center" width="15%">이름</th>
+							<th class="text-center" width="20%">작성일</th>
+							<th class="text-center" width="10%">조회수</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="vo:${list}">
+							<td class="text-center" width="10%">[[${vo.no}]]</td>
+							<td class="text-center" width="45%">
+								<a th:href="@{/board/detail(no=${vo.no})}">
+								[[${vo.subject}]]
+								</a>
+							</td>
+							<td class="text-center" width="15%">[[${vo.name}]]</td>
+							<td class="text-center" width="20%">[[${#temporals.format(vo.regdate,'yyyy-MM-dd')}]]</td>
+							<td class="text-center" width="10%">[[${vo.hit}]]</td>
+						</tr>
+						<tr>
+							<td colspan="5" class="text-center">
+								<a th:href="@{/board/list(page=${curpage > 1 ? curpage-1:curpage})}" class="btn btn-sm btn-primary">이전</a>
+									<span th:text="${curpage}"></span> page /
+									<span th:text="${totalpage}"></span> pages
+								<a th:href="@{/board/list(page=${curpage < totalpage ? curpage+1:curpage})}" class="btn btn-sm btn-primary">다음</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</body>
+</html>

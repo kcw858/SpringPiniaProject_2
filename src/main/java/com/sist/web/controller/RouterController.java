@@ -24,7 +24,6 @@ public class RouterController {
 	@GetMapping("/")
 	public String main_main(Model model)
 	{
-		//System.out.println(pService.prices());
 		model.addAttribute("main_html","main/home");
 		return "main/main";
 	}
